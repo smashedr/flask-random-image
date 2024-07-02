@@ -17,9 +17,9 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - dockerfile: ./nginx/Dockerfile
+          - context: ./nginx
             image: ghcr.io/${{ github.repository }}-nginx
-          - dockerfile: ./app/Dockerfile
+          - context: ./app
             image: ghcr.io/${{ github.repository }}-app
     permissions:
       contents: read
@@ -64,9 +64,7 @@ jobs:
       - name: 'Build and Push'
         uses: docker/build-push-action@v4
         with:
-          context: .
+          context: ${{ matrix.context }}
           platforms: linux/amd64,linux/arm64
           push: true
-          file: ${{ matrix.dockerfile }}
           tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
