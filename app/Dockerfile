@@ -10,6 +10,10 @@ RUN python3 -m pip install --no-cache-dir --upgrade pip  &&\
 
 FROM python:3.11-alpine
 
+LABEL org.opencontainers.image.source="https://github.com/smashedr/flask-random-image"
+LABEL org.opencontainers.image.description="Flask Random Image"
+LABEL org.opencontainers.image.authors="smashedr"
+
 ENV TZ=UTC
 ENV PYTHONUNBUFFERED=1
 
