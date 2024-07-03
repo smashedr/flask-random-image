@@ -35,6 +35,7 @@ services:
     depends_on:
       - app
     networks:
+      - internal
       - traefik-public
 
   app:
@@ -53,7 +54,11 @@ services:
         limits:
           cpus: '2.0'
           memory: 64M
+    networks:
+      - internal
 
 networks:
+  internal:
+    driver: overlay
   traefik-public:
     external: true
