@@ -69,9 +69,15 @@ jobs:
       #    push: true
       #    tags: ${{ steps.meta.outputs.tags }}
 
-      - name: 'Compose Build Push'
-        env:
-          compose_file: 'docker-compose-swarm.yaml'
-        run: |
-          docker-compose -f ${compose_file} build
-          docker-compose -f ${compose_file} push
+      #- name: 'Compose Build Push'
+      #  env:
+      #    compose_file: 'docker-compose-swarm.yaml'
+      #  run: |
+      #    docker-compose -f ${compose_file} build
+      #    docker-compose -f ${compose_file} push
+
+      - name: 'Bake and Push'
+        uses: docker/bake-action@v5
+        with:
+          push: true
+          files: docker-compose-swarm.yaml

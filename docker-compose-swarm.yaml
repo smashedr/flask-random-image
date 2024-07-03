@@ -2,7 +2,12 @@ version: '3.8'
 
 services:
   nginx:
-    build: nginx
+    build:
+      context: nginx
+      x-bake:
+        platforms:
+          - linux/amd64
+          - linux/arm64
     image: ghcr.io/smashedr/flask-random-image-nginx:latest
     #env_file: settings.env
     deploy:
@@ -30,10 +35,16 @@ services:
     depends_on:
       - app
     networks:
+      - internal
       - traefik-public
 
   app:
-    build: app
+    build:
+      context: app
+      x-bake:
+        platforms:
+          - linux/amd64
+          - linux/arm64
     image: ghcr.io/smashedr/flask-random-image-app:latest
     #env_file: settings.env
     command: 'gunicorn -w 2 -t 60 -b 0.0.0.0:9000 app:app'
@@ -43,7 +54,11 @@ services:
         limits:
           cpus: '2.0'
           memory: 64M
+    networks:
+      - internal
 
 networks:
+  internal:
+    driver: overlay
   traefik-public:
     external: true
