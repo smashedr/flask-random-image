@@ -13,14 +13,14 @@ jobs:
     name: 'Build'
     runs-on: ubuntu-latest
     timeout-minutes: 15
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - context: ./nginx
-            image: ghcr.io/${{ github.repository }}-nginx
-          - context: ./app
-            image: ghcr.io/${{ github.repository }}-app
+    #strategy:
+    #  fail-fast: false
+    #  matrix:
+    #    include:
+    #      - context: ./nginx
+    #        image: ghcr.io/${{ github.repository }}-nginx
+    #      - context: ./app
+    #        image: ghcr.io/${{ github.repository }}-app
     permissions:
       contents: read
       packages: write
@@ -41,30 +41,37 @@ jobs:
         with:
           platforms: linux/amd64,linux/arm64
 
-      - name: 'Docker Metadata'
-        id: meta
-        uses: docker/metadata-action@v5
+      #- name: 'Docker Metadata'
+      #  id: meta
+      #  uses: docker/metadata-action@v5
+      #  env:
+      #    latest: ${{ ! github.event.release.prerelease && github.event_name == 'release' }}
+      #  with:
+      #    images: ${{ matrix.image }}
+      #    flavor: |
+      #      latest=false
+      #    tags: |
+      #      type=ref,event=pr
+      #      type=ref,event=tag
+      #      type=raw,value=latest,enable=${{ env.latest }}
+
+      #- name: 'Debug'
+      #  run: |
+      #    echo "file: ${{ matrix.dockerfile }}"
+      #    echo "image: ${{ matrix.image }}"
+      #    echo "tags: ${{ steps.meta.outputs.tags }}"
+
+      #- name: 'Build and Push'
+      #  uses: docker/build-push-action@v4
+      #  with:
+      #    context: ${{ matrix.context }}
+      #    platforms: linux/amd64,linux/arm64
+      #    push: true
+      #    tags: ${{ steps.meta.outputs.tags }}
+
+      - name: 'Compose Build Push'
         env:
-          latest: ${{ ! github.event.release.prerelease && github.event_name == 'release' }}
-        with:
-          images: ${{ matrix.image }}
-          flavor: |
-            latest=false
-          tags: |
-            type=ref,event=pr
-            type=ref,event=tag
-            type=raw,value=latest,enable=${{ env.latest }}
-
-      - name: 'Debug'
+          compose_file: 'docker-compose-swarm.yaml'
         run: |
-          echo "file: ${{ matrix.dockerfile }}"
-          echo "image: ${{ matrix.image }}"
-          echo "tags: ${{ steps.meta.outputs.tags }}"
-
-      - name: 'Build and Push'
-        uses: docker/build-push-action@v4
-        with:
-          context: ${{ matrix.context }}
-          platforms: linux/amd64,linux/arm64
-          push: true
-          tags: ${{ steps.meta.outputs.tags }}
+          docker-compose -f ${compose_file} build
+          docker-compose -f ${compose_file} push
