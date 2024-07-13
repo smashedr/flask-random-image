@@ -80,4 +80,4 @@ jobs:
         uses: docker/bake-action@v5
         with:
           push: true
-          files: docker-compose-swarm.yaml
+          files: docker-compose-build.yaml

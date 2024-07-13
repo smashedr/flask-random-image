@@ -4,10 +4,10 @@ services:
   nginx:
     build:
       context: nginx
-      #x-bake:
-      #  platforms:
-      #    - linux/amd64
-      #    - linux/arm64
+      x-bake:
+        platforms:
+          - linux/amd64
+          - linux/arm64
     image: ghcr.io/smashedr/flask-random-image-nginx:latest
     #env_file: settings.env
     deploy:
@@ -41,10 +41,10 @@ services:
   app:
     build:
       context: app
-      #x-bake:
-      #  platforms:
-      #    - linux/amd64
-      #    - linux/arm64
+      x-bake:
+        platforms:
+          - linux/amd64
+          - linux/arm64
     image: ghcr.io/smashedr/flask-random-image-app:latest
     #env_file: settings.env
     command: 'gunicorn -w 2 -t 60 -b 0.0.0.0:9000 app:app'
