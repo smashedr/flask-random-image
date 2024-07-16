@@ -1,7 +1,8 @@
 services:
   nginx:
-    build: nginx
-    image: flask-app-nginx:latest
+    build:
+      context: nginx
+    image: flask-random-image-nginx:latest
     #env_file: settings.env
     deploy:
       replicas: 1
@@ -20,8 +21,9 @@ services:
       - '80:80'
 
   app:
-    build: app
-    image: flask-app:latest
+    build:
+      context: app
+    image: flask-random-image:latest
     #env_file: settings.env
     command: 'gunicorn -w 2 -t 60 -b 0.0.0.0:9000 app:app'
     deploy:
@@ -30,3 +32,8 @@ services:
         limits:
           cpus: '2.0'
           memory: 64M
+    healthcheck:
+      test: ['CMD-SHELL', 'curl -sf localhost:9000/app-health-check || exit 1']
+      interval: 10s
+      timeout: 10s
+      retries: 3
