@@ -27,8 +27,8 @@ def flask_health_check():
 
 @app.route('/')
 def index():
-    # return redirect('https://github.com/smashedr/random-image', code=302)
-    return 'API Online!'
+    return redirect('https://smashedr.github.io/random-image/', code=302)
+    # return 'API Online!'
 
 
 @app.route('/aviation', strict_slashes=False)
